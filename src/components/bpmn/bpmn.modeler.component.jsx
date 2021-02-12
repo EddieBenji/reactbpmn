@@ -1,16 +1,18 @@
-import React, { Component }  from 'react';
-import BpmnModeler from 'bpmn-js/lib/Modeler';
-import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-font/dist/css/bpmn-embedded.css';
-import { emptyBpmn } from '../../assets/empty.bpmn';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
+import 'bpmn-js/dist/assets/diagram-js.css';
+import BpmnModeler from 'bpmn-js/lib/Modeler';
+import BpmnModdle from 'bpmn-moddle';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
+import React, { Component } from 'react';
+import { emptyBpmn } from '../../assets/empty.bpmn';
 
 class BpmnModelerComponent extends Component {
-    
+
     modeler = null;
-    
+    moddle = new BpmnModdle();
+
     componentDidMount = () => {
         this.modeler = new BpmnModeler({
             container: '#bpmnview',
@@ -30,11 +32,11 @@ class BpmnModelerComponent extends Component {
         });
 
         this.newBpmnDiagram();
-    }
+    };
 
     newBpmnDiagram = () => {
         this.openBpmnDiagram(emptyBpmn);
-    }
+    };
 
     openBpmnDiagram = (xml) => {
         this.modeler.importXML(xml, (error) => {
@@ -46,16 +48,33 @@ class BpmnModelerComponent extends Component {
 
             canvas.zoom('fit-viewport');
         });
-    }
+    };
+
+    translateXMLtoJson = async (xml) => {
+        const { rootElement: definitions } = await this.moddle.fromXML(xml);
+        console.log(JSON.stringify(definitions));
+    };
+
+    exportDiagram = async () => {
+        this.modeler.saveXML({ format: true }, (err, xml) => {
+            if (err) {
+                return console.error('could not export BPMN 2.0 diagram xml', err);
+            }
+            this.translateXMLtoJson(xml);
+        });
+    };
 
     render = () => {
-        return(
-            <div id="bpmncontainer">
-                <div id="propview" style={{ width: '25%', height: '98vh', float: 'right', maxHeight: '98vh', overflowX: 'auto' }}></div>
-                <div id="bpmnview" style={{ width: '75%', height: '98vh', float: 'left' }}></div>
-            </div>
-        )
-    }
+        return (
+          <div id="bpmncontainer">
+              <div id="export" style={{ width: 'auto', float: 'right' }}>
+                  <button onClick={this.exportDiagram}>Export</button>
+              </div>
+              <div id="propview" style={{ width: '25%', height: '98vh', float: 'right', maxHeight: '98vh', overflowX: 'auto' }}></div>
+              <div id="bpmnview" style={{ width: '70%', height: '98vh', float: 'left', border: '1px solid black' }}></div>
+          </div>
+        );
+    };
 }
 
 export default BpmnModelerComponent;
