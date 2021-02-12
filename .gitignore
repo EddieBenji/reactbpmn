@@ -22,5 +22,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Jetbrains stuff
+.idea
+.idea/
+.idea/*
+
 # node versioning
 .nvmrc
