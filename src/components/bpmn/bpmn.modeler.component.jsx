@@ -4,7 +4,6 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camu
 import 'bpmn-js/dist/assets/diagram-js.css';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import BpmnModdle from 'bpmn-moddle';
-import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import React, { Component } from 'react';
 import { emptyBpmn } from '../../assets/empty.bpmn';
 
@@ -25,10 +24,7 @@ class BpmnModelerComponent extends Component {
             additionalModules: [
                 propertiesPanelModule,
                 propertiesProviderModule
-            ],
-            moddleExtensions: {
-                camunda: camundaModdleDescriptor
-            }
+            ]
         });
 
         this.newBpmnDiagram();
